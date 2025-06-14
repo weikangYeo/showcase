@@ -4,7 +4,7 @@
 
   <groupId>com.wk</groupId>
   <artifactId>sample-ms-archetype</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
   <name>sample-ms-archetype</name>

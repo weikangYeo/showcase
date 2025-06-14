@@ -5,7 +5,7 @@
            mvn archetype:generate \
              -DarchetypeGroupId=com.wk \
              -DarchetypeArtifactId=sample-ms-archetype \
-             -DarchetypeVersion=0.0.1-SNAPSHOT \
+             -DarchetypeVersion=0.0.2-SNAPSHOT \
              -DgroupId=com.wk \
-              -DartifactId=account-service
+              -DartifactId=casa-service
            ```

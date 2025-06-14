@@ -2,12 +2,12 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 spring:
-  application.name: ${artifactId}
+  application.name: user-profile-service
   dataSource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOSTNAME}:3306/${DB_NAME}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOSTNAME:localhost}:3306/${DB_NAME:user_profile}
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:user}
   flyway:
     enabled: true
     locations: classpath:db/migration

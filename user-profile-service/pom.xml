@@ -6,11 +6,11 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.1-SNAPSHOT</version> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>${groupId}</groupId>
-	<artifactId>${artifactId}</artifactId>
-	<version>${version}</version>
-	<name>${artifactId}</name>
-	<description>${artifactId}</description>
+	<groupId>com.wk</groupId>
+	<artifactId>user-profile-service</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>user-profile-service</name>
+	<description>user-profile-service</description>
 	<licenses>
 		<license />
 	</licenses>
