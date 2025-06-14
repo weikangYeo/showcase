@@ -8,6 +8,24 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ms-archetype" />
       </profile>
+      <profile name="Annotation profile for sample-ms" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+      </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ms-archetype" target="24" />
+      <module name="sample-ms" target="24" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="sample-ms" options="-parameters" />
+    </option>
   </component>
 </project>
