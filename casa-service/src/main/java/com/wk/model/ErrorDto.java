@@ -1,13 +1,15 @@
-package ${package}.model;
+package com.wk.model;
 
+import lombok.Builder;
 import lombok.Data;
+
 import java.util.Date;
 
-@Builder
 @Data
+@Builder
 public class ErrorDto {
     /**
-        * For lang pack impl (backlog)
+     * For lang pack impl (backlog)
      */
     private String code;
     private String message;

@@ -1,2 +1,2 @@
-CREATE DATABASE IF NOT EXISTS `account`;
-GRANT ALL ON `account`.* TO 'user'@'%';
+CREATE DATABASE IF NOT EXISTS `casa_db`;
+GRANT ALL ON `casa_db`.* TO 'user'@'%';

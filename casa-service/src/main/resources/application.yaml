@@ -1,8 +1,8 @@
 spring:
-  application.name: user-profile-service
+  application.name: casa-service
   dataSource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOSTNAME:localhost}:3306/${DB_NAME:user_profile}
+    url: jdbc:mysql://${DB_HOSTNAME:localhost}:3306/${DB_NAME:casa_db}
     username: ${DB_USERNAME:user}
     password: ${DB_PASSWORD:user}
   flyway:

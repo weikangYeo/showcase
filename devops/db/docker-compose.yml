@@ -3,7 +3,7 @@ version: "3.8"
 # Collection of services for local development, Dev could start up individual service respectively if needed.
 name: showcase-docker-stacks
 services:
-  symphony-dm-mysql:
+  showcase-rds:
     container_name: showcase-db
     image: mysql:9.3.0
     environment:

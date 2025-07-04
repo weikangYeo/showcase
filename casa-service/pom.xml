@@ -7,10 +7,10 @@
 		<version>3.5.1-SNAPSHOT</version> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wk</groupId>
-	<artifactId>user-profile-service</artifactId>
+	<artifactId>casa-service</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>user-profile-service</name>
-	<description>user-profile-service</description>
+	<name>casa-service</name>
+	<description>casa-service</description>
 	<licenses>
 		<license />
 	</licenses>
@@ -61,7 +61,6 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -129,9 +128,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<layers>
-						<enabled>true</enabled>
-					</layers>
 				</configuration>
 			</plugin>
 		</plugins>
