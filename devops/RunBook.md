@@ -1,0 +1,11 @@
+# Infra RunBook
+- app build (todo: refactor to a script)
+  - cd to individual app folder
+  - `docker build -t showcase/user-profile-service:v1.0 .`
+  - k3d image import showcase/user-profile-service:v1.1 -c showcase-cluster
+- cd `db`, `docker-compose up` to spin up db in docker
+- cd ../cluster (todo: refactor to a script)
+  - docker pull quay.io/keycloak/keycloak:26.2.5
+  - k3d image import quay.io/keycloak/keycloak:26.2.5 -c showcase-cluster
+  - kubectl apply -f keycloak-deployment.yaml
+  - 

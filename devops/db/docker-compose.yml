@@ -11,7 +11,7 @@ services:
       - MYSQL_USER=user
       - MYSQL_PASSWORD=user
     ports:
-      - 3306:3306
+      - 3307:3306
     volumes:
       - ./init:/docker-entrypoint-initdb.d
     command: mysqld --lower_case_table_names=1  --character_set_server=utf8 --explicit_defaults_for_timestamp
