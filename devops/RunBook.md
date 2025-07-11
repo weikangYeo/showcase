@@ -1,4 +1,14 @@
 # Infra RunBook
+- create or start k3d cluster
+  - `k3d cluster create showcase-cluster --registry-create showcase-cluster-registry:0.0.0.0:5000 -p "8080:80@loadbalancer"` create a local cluster in k3d
+    - it create registry in port 5000
+    - it creates a port mapping from 8080 (host port) to port 80 (traefik, ingress controller port)
+  - or just `k3d cluster start showcase-cluster` to start cluster
+- install traefik (no need if using k3d, as k3d installed it by default)
+  - kubectl config set-context --current --namespace=default
+  - helm repo add traefik https://traefik.github.io/charts
+  - helm repo update
+  - helm install traefik traefik/traefik -f values.yaml --wait
 - app build (todo: refactor to a script)
   - cd to individual app folder
   - `docker build -t showcase/user-profile-service:v1.0 .`
@@ -8,4 +18,6 @@
   - docker pull quay.io/keycloak/keycloak:26.2.5
   - k3d image import quay.io/keycloak/keycloak:26.2.5 -c showcase-cluster
   - kubectl apply -f keycloak-deployment.yaml
-  - 
+  - kubectl apply -f ingress.yaml
+  - added `127.0.0.1 keycloak.local` to /etc/hosts file
+  - verify changes in http://keycloak.local:8080
