@@ -8,3 +8,11 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+# todo test, and add to archetype + other services
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          introspection-uri: https://idp.example.com/introspect
+          client-id: client
+          client-secret: secret
