@@ -88,11 +88,12 @@ spec:
             - name: JAVA_OPTS_APPEND
               value: '-Djgroups.dns.query="keycloak-discovery" -Djgroups.bind.address=$(POD_IP)'
             # MySQL Configuration
+            # todo change to config map
             - name: 'KC_DB'
               value: 'mysql'
             - name: 'KC_DB_URL_HOST'
-#              value: 'host.docker.internal'  # This allows k3d to access docker services
-              value: 'host.k3d.internal'  # This allows k3d to access host services
+              value: 'host.docker.internal'  # This allows k3d to access docker services
+#              value: 'host.k3d.internal'  # This allows k3d to access host services
             - name: 'KC_DB_URL_PORT'
               value: '3307'
             - name: 'KC_DB_URL_DATABASE'

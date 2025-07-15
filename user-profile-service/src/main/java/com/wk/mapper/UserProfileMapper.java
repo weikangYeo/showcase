@@ -9,4 +9,5 @@ import org.mapstruct.MappingConstants;
 public interface UserProfileMapper {
 
     UserProfileDto toDto(UserProfile userProfile);
+    UserProfile toEntity(UserProfileDto dto);
 }

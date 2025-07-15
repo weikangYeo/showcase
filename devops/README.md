@@ -54,30 +54,33 @@ Using Mysql 8.4.X because Flyway is not supporting MySQL 9.X at time of writing.
 --- 
 
 # Keycloak
-
-after deploy (referred run book), to access admin page:
-
-- kubectl port-forward service/keycloak 8080:8080
-  - or (to be tested) via ingress controller
-      - ```yaml
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
-        metadata:
-        name: keycloak-ingress
-        annotations:
-        nginx.ingress.kubernetes.io/rewrite-target: /
-        spec:
-        rules:
-          - host: keycloak.local
-            http:
-            paths:
-              - path: /
-                pathType: Prefix
-                backend:
-                service:
-                name: keycloak
-                port:
-                number: 8080
+## Setup
+- after deployed services & ingress, added host file (/etc/hosts), access
+  `http://keycloak.local:8081` for admin console
+    - user: admin, pwd: admin
+- Create realm `showcase`
+- to get realm metadata info, access
+  `http://${host}:${port}/realms/${realm-name}/.well-known/uma2-configuration`
+    - can url like token endpoint, introspect endpoint etc here.
+- create a dummy client act as a FE app, and allow valid url "http://localhost:3000"
+    - e.g. "web-client" at this case
+- go to realm, admin-cli client
+  - enable service account authentication (so can use client secret in keycloak admin client)
+  - copy client secret and paste in application.yaml (user profile service)
+- create a role called `realm-admin` (or equivalent) to manage realm user
+  - grant realm-management:manage-user permission to this role
+  - grant this role to admin-cli service account
+## Login
+- Naviagate to `http://keycloak.local:8081/realms/showcase/protocol/openid-connect/auth?client_id=web-client&redirect_uri=http://localhost:3000/callback&response_type=code&scope=openid`
+  - since dont have FE code yet, so just copy `code` from response
+- Fire /token api to access token
+  - ```curl
+    curl --location 'http://keycloak.local:8081/realms/showcase/protocol/openid-connect/token' \
+    --header 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'grant_type=authorization_code' \
+    --data-urlencode 'client_id=web-client' \
+    --data-urlencode 'client_secret=dpine2z9X29JN0M92iJM4rzbdR6upYHs' \
+    --data-urlencode 'code=9dcadfb3-3395-4e24-81f1-8ddbe0aada0c.dd1e2cdf-32b5-4491-8d9d-953eb3ead53f.8b5e7b12-2262-45c1-ad1b-5be07192874f' \
+    --data-urlencode 'redirect_uri=http://localhost:3000/callback'
     ```
-  - and Add keycloak.local to your host's /etc/hosts pointing to the k3d cluster's ingress IP
-- username password = admin
+- get access token from response
