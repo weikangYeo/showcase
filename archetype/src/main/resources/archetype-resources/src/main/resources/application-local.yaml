@@ -1,0 +1,13 @@
+spring:
+  application.name: user-profile-service
+  dataSource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/${artifactId}
+    username: user
+    password: suer
+  # use JWT because using keycloak as OIDC, and it only natively support JWT
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri:http://keycloak.local:8081/realms/showcase

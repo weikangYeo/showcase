@@ -13,8 +13,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          # todo replace with local yaml, since k8s is using http://keycloak-service:8080 and local using http://keycloak.local:8081
-          issuer-uri: ${AUTH_SERVER_ISS_URI:http://keycloak.local:8081/realms/showcase}
+          issuer-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak-service:8080}/realms/${APP_REALM:showcase}
 logging:
   level:
     root: debug
@@ -28,12 +27,10 @@ management:
   health:
     livenessState.enabled: true
     readinessState.enabled: true
-# todo move default value to local yaml, and leave var prop in application yaml to be injected via config map later
 keycloak:
   admin:
-    # todo replace with local yaml, since k8s is using http://keycloak-service:8080 and local using http://keycloak.local:8081
-#    server-url: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak-service:8080}
-    server-url: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak.local:8081}
+    # todo replace with config map
+    server-url: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak-service:8080}
     # todo work even without master realm, whats the point setting here?
     realm: ${APP_REALM:showcase}
     client-id: admin-cli
