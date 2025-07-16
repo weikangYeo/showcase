@@ -1,4 +1,4 @@
-# Infra RunBook
+# Setup & Infra RunBook
 ## Pre-requsive
 - WSL or UNIX env
 - k3d installed in path
