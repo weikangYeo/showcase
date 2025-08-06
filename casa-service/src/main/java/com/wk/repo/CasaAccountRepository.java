@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CasaAccountRepository extends JpaRepository<String, CasaAccount> {
+public interface CasaAccountRepository extends JpaRepository<CasaAccount, String> {
 
-    List<CasaAccount> getAllCasaByUserId(Integer userId);
+    List<CasaAccount> getAllCasaByUserId(Long userId);
 }

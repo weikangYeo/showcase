@@ -13,7 +13,7 @@ public class CasaService {
 
     private final CasaAccountRepository repository;
 
-    public List<CasaAccount> getAllByUserId(Integer userId) {
+    public List<CasaAccount> getAllByUserId(Long userId) {
         return repository.getAllCasaByUserId(userId);
     }
 }

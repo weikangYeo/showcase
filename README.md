@@ -42,6 +42,9 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
     - [ ]  Proxy, reverse proxy, rate limiting
   - [ ]  Migrate to Helm?
   - [ ]  Istio ?
+  - [ ] Start up Script
+    - [ ] include NodeJS & Express installation in setup script
+    - [ ] include FE startup script in startup script
 - [ ]  Ms
   - [x]  Archetype
   - [ ]  User ms→ to gen JWT
@@ -62,6 +65,16 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 - [ ]  log
   - [ ]  grafana, fluentD, elastic search?
   - [ ]  service mesh - Trae
+
+## Local Development
+- Start docker compose
+- start app at port 8080
+- test api via 8080
+
+## Local cluster testing
+- Start cluster (run `./devops/start-cluster.bash`)
+- Run Helm (?)
+- 
 
 --
 # Remark
@@ -122,6 +135,14 @@ Using Mysql 8.4.X because Flyway is not supporting MySQL 9.X at time of writing.
 
 ### Login
 
+#### FE flow
+- Make sure you have nodejs installed
+- Install express, `npm install express --save`
+- node ./ui/server.js
+- it will start ui page in localhost:3000
+
+
+#### BE flow
 - Naviagate to
   `http://keycloak.local:8081/realms/showcase/protocol/openid-connect/auth?client_id=web-client&redirect_uri=http://localhost:3000/callback&response_type=code&scope=openid`
     - since dont have FE code yet, so just copy `code` from response

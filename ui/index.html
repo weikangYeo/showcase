@@ -6,21 +6,31 @@
     <style>
         body { font-family: sans-serif; padding: 2em; }
         pre { background-color: #eee; padding: 1em; white-space: pre-wrap; word-break: break-all; }
+        .warning { background-color: #ffebee; color: #c62828; padding: 1em; border: 1px solid #c62828; border-radius: 4px; }
     </style>
 </head>
 <body>
     <h1>Keycloak OAuth2 Token Helper</h1>
     <div id="login-section">
-        <p>Enter your Keycloak client details below and click the button to log in.</p>
+        <p>Enter your Keycloak client details below. The Redirect URI must be registered as a "Valid Redirect URI" in your Keycloak client settings.</p>
         <div>
             <label for="clientId">Client ID:</label><br>
             <input type="text" id="clientId" value="web-client" style="width: 300px;"><br><br>
             <label for="clientSecret">Client Secret:</label><br>
             <input type="text" id="clientSecret" value="dpine2z9X29JN0M92iJM4rzbdR6upYHs" style="width: 300px;"><br><br>
+            <label for="redirectUri">Redirect URI (for Login Flow):</label><br>
+            <input type="text" id="redirectUri" value="http://localhost:3000/index.html" style="width: 300px;"><br><br>
         </div>
-        <button id="login-btn">Login with Keycloak</button>
+        <button id="login-btn">Login with Keycloak (User Flow)</button>
+        <hr style="margin: 2em 0;">
+        <div class="warning">
+            <strong>Security Warning:</strong> The Client Credentials flow should only be used by confidential clients (like backend services) that can protect the client secret. Never expose a client secret in a public client like a web browser.
+        </div>
+        <button id="client-credentials-btn">Get Token with Client Credentials (M2M Flow)</button>
     </div>
     <div id="token-section" style="display: none;">
+        <h2>Your OAuth Code:</h2>
+        <pre id="oauth-code"></pre>
         <h2>Your Access Token:</h2>
         <pre id="access-token"></pre>
         <h2>Your Refresh Token:</h2>
@@ -32,26 +42,71 @@
     <script>
         const keycloakConfig = {
             url: 'http://keycloak.local:8081',
-            realm: 'showcase',
-            clientId: 'web-client',
-            clientSecret: 'dpine2z9X29JN0M92iJM4rzbdR6upYHs', // WARNING: See security note in instructions.
-            redirectUri: window.location.origin + window.location.pathname
+            realm: 'showcase'
         };
 
         const loginButton = document.getElementById('login-btn');
+        const clientCredentialsButton = document.getElementById('client-credentials-btn');
         const loginSection = document.getElementById('login-section');
         const tokenSection = document.getElementById('token-section');
         const accessTokenElem = document.getElementById('access-token');
         const refreshTokenElem = document.getElementById('refresh-token');
         const decodedTokenElem = document.getElementById('decoded-token');
+        const oauthCodeElem = document.getElementById('oauth-code');
 
         const clientIdInput = document.getElementById('clientId');
         const clientSecretInput = document.getElementById('clientSecret');
+        const redirectUriInput = document.getElementById('redirectUri');
+
+        // Persist input values in localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            clientIdInput.value = localStorage.getItem('clientId') || 'web-client';
+            clientSecretInput.value = localStorage.getItem('clientSecret') || 'dpine2z9X29JN0M92iJM4rzbdR6upYHs';
+            redirectUriInput.value = localStorage.getItem('redirectUri') || 'http://localhost:8080/index.html';
+        });
+
+        clientIdInput.addEventListener('input', () => localStorage.setItem('clientId', clientIdInput.value));
+        clientSecretInput.addEventListener('input', () => localStorage.setItem('clientSecret', clientSecretInput.value));
+        redirectUriInput.addEventListener('input', () => localStorage.setItem('redirectUri', redirectUriInput.value));
 
         loginButton.onclick = () => {
             const clientId = clientIdInput.value;
-            const authUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(keycloakConfig.redirectUri)}&response_type=code&scope=openid`;
+            const redirectUri = redirectUriInput.value;
+            const authUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid`;
             window.location.href = authUrl;
+        };
+
+        clientCredentialsButton.onclick = () => {
+            const clientId = clientIdInput.value;
+            const clientSecret = clientSecretInput.value;
+
+            const tokenUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`;
+            const params = new URLSearchParams();
+            params.append('grant_type', 'client_credentials');
+            params.append('client_id', clientId);
+            params.append('client_secret', clientSecret);
+
+            fetch(tokenUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(response => response.json())
+            .then(data => {
+                loginSection.style.display = 'none';
+                tokenSection.style.display = 'block';
+                oauthCodeElem.textContent = 'N/A (Client Credentials Flow)';
+                if (data.access_token) {
+                    accessTokenElem.textContent = data.access_token;
+                    refreshTokenElem.textContent = data.refresh_token || 'N/A';
+                    decodedTokenElem.textContent = decodeJwt(data.access_token);
+                } else {
+                    accessTokenElem.textContent = JSON.stringify(data, null, 2);
+                }
+            })
+            .catch(error => {
+                accessTokenElem.textContent = 'Error fetching token: ' + error;
+            });
         };
 
         function decodeJwt(token) {
@@ -74,9 +129,11 @@
             if (code) {
                 loginSection.style.display = 'none';
                 tokenSection.style.display = 'block';
+                oauthCodeElem.textContent = code;
 
-                const clientId = clientIdInput.value;
-                const clientSecret = clientSecretInput.value;
+                const clientId = localStorage.getItem('clientId') || 'web-client';
+                const clientSecret = localStorage.getItem('clientSecret') || 'dpine2z9X29JN0M92iJM4rzbdR6upYHs';
+                const redirectUri = localStorage.getItem('redirectUri') || 'http://localhost:8080/index.html';
 
                 const tokenUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`;
                 const params = new URLSearchParams();
@@ -84,13 +141,11 @@
                 params.append('client_id', clientId);
                 params.append('client_secret', clientSecret);
                 params.append('code', code);
-                params.append('redirect_uri', keycloakConfig.redirectUri);
+                params.append('redirect_uri', redirectUri);
 
                 fetch(tokenUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: params
                 })
                 .then(response => response.json())

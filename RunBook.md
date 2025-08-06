@@ -8,6 +8,7 @@
 - added `127.0.0.1 keycloak.local` to /etc/hosts file
 - installed JDK 24 in path
 
+# Init 
 ## Automated init 
 `./devops/init-cluster.bash`
 
@@ -31,3 +32,6 @@
   - verify changes in http://keycloak.local:8081
 
 > Remark: all this is work in WSL as docker is bridging the connection between host machine and wsl
+
+# Start App
+run `./devops/start-cluster.bash`

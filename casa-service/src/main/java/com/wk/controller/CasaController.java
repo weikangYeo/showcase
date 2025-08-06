@@ -22,7 +22,7 @@ public class CasaController {
     @GetMapping("/casa")
     public List<CasaAccountDto> getAllCasaByUserId() {
         // todo get from security context
-        return casaService.getAllByUserId(1)
+        return casaService.getAllByUserId(1L)
                 .stream()
                 .map(casaMapper::toDto)
                 .toList();
