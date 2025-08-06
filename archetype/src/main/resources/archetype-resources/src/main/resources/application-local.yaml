@@ -1,10 +1,10 @@
 spring:
-  application.name: user-profile-service
+  application.name: ${artifactId}
   dataSource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3307/${artifactId}
     username: user
-    password: suer
+    password: user
   # use JWT because using keycloak as OIDC, and it only natively support JWT
   security:
     oauth2:
