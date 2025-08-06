@@ -7,6 +7,8 @@
   - disabled containerd, as of k3d v5.8.3, it doesn't work with containerd image 
 - added `127.0.0.1 keycloak.local` to /etc/hosts file
 - installed JDK 24 in path
+- mvn installed in path
+- 
 
 # Init 
 ## Automated init 

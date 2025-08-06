@@ -1,0 +1,22 @@
+service:
+  name: user-profile-service
+  image:
+    name: user-profile-service
+
+config:
+  db:
+    name: "user_profile"
+    # todo: to be replaced by secret
+    username: "user"
+    password: "user"
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: "user-profile.local"
+      paths:
+        - path: /
+          pathType: Prefix

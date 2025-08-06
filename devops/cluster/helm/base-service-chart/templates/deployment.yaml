@@ -1,0 +1,43 @@
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    app: {{ .Values.service.name }}
+spec:
+  replicas: {{ .Values.service.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.service.name }}
+    spec:
+      containers:
+        - name: {{ .Values.service.name }}
+          image: "{{ .Values.service.image.repository }}/{{ .Values.service.image.name }}:{{ .Values.service.image.tag }}"
+          imagePullPolicy: {{ .Values.service.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.config.db }}
+          - name: DB_{{ $key | upper }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ $.Values.service.name }}-config
+                key: DB_{{ $key | upper }}
+          {{- end }}
+          {{- if .Values.healthCheck.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.paths.startup }}
+              port: {{ .Values.healthCheck.port }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.paths.readiness }}
+              port: {{ .Values.healthCheck.port }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.paths.liveness }}
+              port: {{ .Values.healthCheck.port }}
+          {{- end }}

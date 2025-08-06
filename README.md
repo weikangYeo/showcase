@@ -4,9 +4,20 @@ This project is aim to reorganize what i have learned, and along the way discove
 platform/framework that I have been utilizing (but built by other member) as a java learning
 material and knowledge base.
 
-> Refer RunBook.md for Pre-requisite items.
+## Pre-requsive
+- WSL or UNIX env
+- k3d installed in path
+- kubectl installed in path
+- docker installed in path
+    - disabled containerd, as of k3d v5.8.3, it doesn't work with containerd image
+- added `127.0.0.1 keycloak.local` to /etc/hosts file
+- installed JDK 24 in path
+- mvn installed in path 
+- helm https://helm.sh/docs/intro/install/
 
 ## TODO 
+> NEXT: Migrate to helm, config health endpoint by pass (no auth). and it should visible to k8s cluster only
+
 Same copy might available in Notion, keep a copy here for future (long) references.
 - [ ]  DevOps
   - [x]  Consider re-setup in WSL (window) ?
@@ -74,8 +85,11 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 ## Local cluster testing
 - Start cluster (run `./devops/start-cluster.bash`)
 - Run Helm (?)
-- 
-
+  - cd to helm directory
+  - helm install user-profile ./base-service-chart -f values/user-profile.yaml
+  - to revert  `helm uninstall user-profile`
+  - to update ` helm upgrade user-profile ./base-service-chart -f values/user-profile.yaml`
+`
 --
 # Remark
 

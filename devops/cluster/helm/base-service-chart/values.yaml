@@ -1,0 +1,46 @@
+# base-service-chart/values.yaml
+service:
+  name: app
+  image:
+    repository: showcase
+    name: app
+    tag: v1.0
+    pullPolicy: Never
+  port: 8080
+  targetPort: 8080
+  replicas: 1
+  portName: 8080-8080
+  protocol: TCP
+
+config:
+  db:
+    hostname: "host.docker.internal"
+    port: "3307"
+    name: ""
+    username: ""
+    password: ""
+
+healthCheck:
+  enabled: true
+  port: 8080
+  paths:
+    startup: /health/started
+    readiness: /health/readiness
+    liveness: /health/liveness
+
+autoscaling:
+  enabled: false
+
+serviceAccount:
+  create: false
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: "{{ .Values.service.name }}.local"
+      paths:
+        - path: /
+          pathType: Prefix

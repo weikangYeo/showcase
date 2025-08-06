@@ -1,0 +1,15 @@
+# templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.service.name }}-config
+data:
+  DB_HOSTNAME: {{ .Values.config.db.hostname | quote }}
+  DB_PORT: {{ .Values.config.db.port | quote }}
+  DB_NAME: {{ .Values.config.db.name | quote }}
+  {{- if .Values.config.db.username }}
+  DB_USERNAME: {{ .Values.config.db.username | quote }}
+  {{- end }}
+  {{- if .Values.config.db.password }}
+  DB_PASSWORD: {{ .Values.config.db.password | quote }}
+  {{- end }}
