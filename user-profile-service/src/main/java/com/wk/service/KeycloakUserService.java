@@ -28,8 +28,6 @@ public class KeycloakUserService {
         UserRepresentation kcUser = new UserRepresentation();
         kcUser.setUsername(user.getName());
         kcUser.setEmail(user.getEmail());
-//            kcUser.setFirstName(user.getFirstName());
-//            kcUser.setLastName(user.getLastName());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
 

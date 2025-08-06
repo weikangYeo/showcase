@@ -29,7 +29,7 @@ public class UserProfilesController {
     // todo change reqBody dto to a separate DTO
     // todo change responseBody to a DTO
     // todo add PreAuthorize code ?
-    public UserProfile getUser(@RequestBody UserProfileDto userProfileDto) {
+    public UserProfile createUser(@RequestBody UserProfileDto userProfileDto) {
         return userProfileService.createUserProfile(mapper.toEntity(userProfileDto));
     }
 }
