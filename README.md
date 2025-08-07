@@ -116,6 +116,11 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
   - helm install user-profile ./base-service-chart -f values/user-profile.yaml
   - to revert  `helm uninstall user-profile`
   - to update ` helm upgrade user-profile ./base-service-chart -f values/user-profile.yaml`
+- Call api to cluster app:
+  - ```
+        curl --location 'user-profile.local/users/1' \
+        --header 'Authorization: Bearer <token>'
+    ``` 
 
 ## Build image
 - To build image, it is required to:
