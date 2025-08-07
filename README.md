@@ -4,13 +4,38 @@ This project is aim to reorganize what i have learned, and along the way discove
 platform/framework that I have been utilizing (but built by other member) as a java learning
 material and knowledge base.
 
-## Pre-requsive
+<!-- TOC -->
+* [Showcase](#showcase)
+  * [Pre-requisite](#pre-requisite)
+  * [TODO](#todo-)
+* [How to](#how-to-)
+  * [Local Development](#local-development)
+  * [Local cluster testing (TODO Update)](#local-cluster-testing-todo-update)
+  * [Build image](#build-image)
+  * [Deploy image to local cluster](#deploy-image-to-local-cluster)
+  * [Get Access token for development](#get-access-token-for-development)
+    * [FE flow](#fe-flow)
+    * [BE flow](#be-flow)
+* [Infrastructure Remark](#infrastructure-remark)
+  * [Cluster](#cluster)
+  * [Docker](#docker)
+    * [Build image](#build-image-1)
+  * [DB Remark](#db-remark)
+    * [Start up scrit](#start-up-scrit)
+    * [Version](#version)
+  * [Keycloak](#keycloak)
+    * [Setup](#setup)
+<!-- TOC -->
+
+## Pre-requisite
 - WSL or UNIX env
 - k3d installed in path
 - kubectl installed in path
 - docker installed in path
     - disabled containerd, as of k3d v5.8.3, it doesn't work with containerd image
-- added `127.0.0.1 keycloak.local` to /etc/hosts file
+- added the followings to /etc/hosts file (win: C:\Windows\System32\drivers\etc)
+  - `127.0.0.1 keycloak.local`
+  - `127.0.0.1 user-profile.local`
 - installed JDK 24 in path
 - mvn installed in path 
 - helm https://helm.sh/docs/intro/install/
@@ -77,21 +102,71 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
   - [ ]  grafana, fluentD, elastic search?
   - [ ]  service mesh - Trae
 
+# How to 
+
 ## Local Development
-- Start docker compose
+- Start docker compose for db stack
 - start app at port 8080
 - test api via 8080
 
-## Local cluster testing
+## Local cluster testing (TODO Update)
 - Start cluster (run `./devops/start-cluster.bash`)
 - Run Helm (?)
   - cd to helm directory
   - helm install user-profile ./base-service-chart -f values/user-profile.yaml
   - to revert  `helm uninstall user-profile`
   - to update ` helm upgrade user-profile ./base-service-chart -f values/user-profile.yaml`
-`
+
+## Build image
+- To build image, it is required to:
+  - maven build
+  - docker build
+  - import to k3d registry 
+- Referred `build-app.bash` for more info
+
+## Deploy image to local cluster
+- Make sure local cluster has been set up (referred `init-cluster.bash`)
+- Make sure cluster is started(run `./devops/start-cluster.bash`)
+- For Keycloak (TODO: migrate to helm)
+  - docker pull quay.io/keycloak/keycloak:26.2.5
+  - k3d image import quay.io/keycloak/keycloak:26.2.5 -c showcase-cluster
+  - kubectl apply -f keycloak-deployment.yaml
+  - kubectl apply -f ingress.yaml
+- For app, run helm install to deploy, helm upgrade to add new release, helm uninstall to delete deployment
+- referred `helm-install-app.bash` for more info.
+
+## Get Access token for development
+### FE flow
+- Make sure you have nodejs installed
+- Install express, `npm install express --save`
+- node ./ui/server.js
+- it will start ui page in localhost:3000
+
+### BE flow
+- Naviagate to
+  `http://keycloak.local:8081/realms/showcase/protocol/openid-connect/auth?client_id=web-client&redirect_uri=http://localhost:3000/callback&response_type=code&scope=openid`
+    - since dont have FE code yet, so just copy `code` from response
+- Fire /token api to access token
+    - ```curl
+  curl --location 'http://keycloak.local:8081/realms/showcase/protocol/openid-connect/token' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'grant_type=authorization_code' \
+  --data-urlencode 'client_id=web-client' \
+  --data-urlencode 'client_secret=dpine2z9X29JN0M92iJM4rzbdR6upYHs' \
+  --data-urlencode '
+  code=9dcadfb3-3395-4e24-81f1-8ddbe0aada0c.dd1e2cdf-32b5-4491-8d9d-953eb3ead53f.8b5e7b12-2262-45c1-ad1b-5be07192874f' \
+  --data-urlencode 'redirect_uri=http://localhost:3000/callback'
+    ```
+- get access token from response
+
 --
-# Remark
+# Infrastructure Remark
+
+## Cluster
+- This app is utilizing k3d cluster.
+- `k3d cluster create showcase-cluster --registry-create showcase-cluster-registry:0.0.0.0:5000 -p "8081:80@loadbalancer"` create a local cluster in k3d
+  - it creates registry in port 5000
+  - it creates a port mapping from 8081 (host port) to port 80 (traefik, ingress controller port)
 
 ## Docker
 
@@ -106,8 +181,6 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
   to test run image in docker.
 - run `k3d image import showcase/user-profile-service:v1.1 -c showcase-cluster` to import from
   docker to local registry (k3d)
-
-### show images
 
 ## DB Remark
 
@@ -146,29 +219,3 @@ Using Mysql 8.4.X because Flyway is not supporting MySQL 9.X at time of writing.
 - create a role called `realm-admin` (or equivalent) to manage realm user
     - grant realm-management:manage-user permission to this role
     - grant this role to admin-cli service account
-
-### Login
-
-#### FE flow
-- Make sure you have nodejs installed
-- Install express, `npm install express --save`
-- node ./ui/server.js
-- it will start ui page in localhost:3000
-
-
-#### BE flow
-- Naviagate to
-  `http://keycloak.local:8081/realms/showcase/protocol/openid-connect/auth?client_id=web-client&redirect_uri=http://localhost:3000/callback&response_type=code&scope=openid`
-    - since dont have FE code yet, so just copy `code` from response
-- Fire /token api to access token
-    - ```curl
-  curl --location 'http://keycloak.local:8081/realms/showcase/protocol/openid-connect/token' \
-  --header 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'grant_type=authorization_code' \
-  --data-urlencode 'client_id=web-client' \
-  --data-urlencode 'client_secret=dpine2z9X29JN0M92iJM4rzbdR6upYHs' \
-  --data-urlencode '
-  code=9dcadfb3-3395-4e24-81f1-8ddbe0aada0c.dd1e2cdf-32b5-4491-8d9d-953eb3ead53f.8b5e7b12-2262-45c1-ad1b-5be07192874f' \
-  --data-urlencode 'redirect_uri=http://localhost:3000/callback'
-    ```
-- get access token from response

@@ -6,11 +6,19 @@ service:
     name: app
     tag: v1.0
     pullPolicy: Never
-  port: 8080
-  targetPort: 8080
-  replicas: 1
-  portName: 8080-8080
-  protocol: TCP
+  app:
+    port: 8080
+    replicas: 1
+    portName: app-port
+    protocol: TCP
+  healthCheck:
+    enabled: true
+    port: 9090
+    portName: actuator-port
+    protocol: TCP
+    paths:
+      readiness: /actuator/health/readiness
+      liveness: /actuator/health/liveness
 
 config:
   db:
@@ -19,14 +27,6 @@ config:
     name: ""
     username: ""
     password: ""
-
-healthCheck:
-  enabled: true
-  port: 8080
-  paths:
-    startup: /health/started
-    readiness: /health/readiness
-    liveness: /health/liveness
 
 autoscaling:
   enabled: false

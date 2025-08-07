@@ -13,7 +13,13 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak-service:8080}/realms/${APP_REALM:showcase}
+          # To validate iss claim, this MUST match the public-facing URL from KC_HOSTNAME
+          # Addressing mess of accessing keycloak in local machine vs cluster
+          issuer-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak.local:8081}/realms/${APP_REALM:showcase}
+          # 2. For FETCHING the security keys from WITHIN the cluster.
+          #    This MUST use the internal Kubernetes service name.
+          jwk-set-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak:8080}/realms/${APP_REALM:showcase}/protocol/openid-connect/certs
+
 
 logging:
   level:

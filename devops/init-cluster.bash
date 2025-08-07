@@ -7,9 +7,9 @@ echo "spin up DB and other localstack"
 docker-compose -f db/docker-compose.yml up -d
 
 echo "creating k3d cluster with registry and port mapping"
-k3d cluster create showcase-cluster --registry-create showcase-cluster-registry:0.0.0.0:5000 -p "8081:80@loadbalancer"
+k3d cluster create showcase-cluster --registry-create showcase-cluster-registry:0.0.0.0:5000 -p "80:80@loadbalancer" -p "443:443@loadbalancer"
 
-echo "pull keycloak image and import to regisry"
+echo "pull keycloak image and import to registry"
 docker pull quay.io/keycloak/keycloak:26.2.5
 k3d image import quay.io/keycloak/keycloak:26.2.5 -c showcase-cluster
 

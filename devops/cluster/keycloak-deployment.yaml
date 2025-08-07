@@ -71,6 +71,14 @@ spec:
             # For production environments, set a hostname for a secure setup.
             - name: KC_HOSTNAME_STRICT
               value: "false"
+            - name: KC_HOSTNAME
+              value: "keycloak.local" # The public, browser-facing URL
+            - name: KC_PROXY
+              value: "edge" # Tells Keycloak it's behind a reverse proxy (the Ingress)
+            - name: KC_HTTP_ENABLED
+              value: "true" # Allows HTTP for local development
+            - name: KC_HOSTNAME_PORT
+              value: "8081" # The public port
             - name: KC_HEALTH_ENABLED
               value: "true"
             - name: 'KC_CACHE'

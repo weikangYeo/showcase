@@ -5,10 +5,17 @@ metadata:
   labels:
     app: {{ .Values.service.name }}
 spec:
+  # Service expose the port
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: {{ .Values.service.protocol }}
-      name: {{ .Values.service.portName }}
+    - port: {{ .Values.service.app.port }}
+      targetPort: {{ .Values.service.app.portName }}
+      protocol: {{ .Values.service.app.protocol }}
+      name: {{ .Values.service.app.portName }}
+  {{- if .Values.service.healthCheck.enabled }}
+    - port: {{ .Values.service.healthCheck.port }}
+      targetPort: {{ .Values.service.healthCheck.portName }}
+      protocol: {{ .Values.service.healthCheck.protocol}}
+      name: {{ .Values.service.healthCheck.portName }}
+  {{- end }}
   selector:
     {{- include "base-service-chart.selectorLabels" . | nindent 4 }}
