@@ -11,6 +11,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak.local:8081}/realms/${APP_REALM:showcase}
+          jwk-set-uri: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak.local:8081}/realms/${APP_REALM:showcase}/protocol/openid-connect/certs
 keycloak:
   admin:
     server-url: ${AUTH_SERVER_K8S_SERVICE_URI:http://keycloak.local:8081}

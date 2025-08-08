@@ -3,7 +3,6 @@ package com.wk.service;
 import com.wk.domain.UserProfile;
 import com.wk.exception.KeycloakUserCreationException;
 import com.wk.property.KeycloakConfig;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
@@ -54,9 +52,6 @@ public class KeycloakUserService {
                 String keycloakUserId = locationHeader.substring(
                     locationHeader.lastIndexOf('/') + 1);
 
-                // Assign default roles
-                assignDefaultRoles(keycloakUserId, user.getRole());
-
                 log.info("Successfully created Keycloak user: {}", user.getName());
                 return keycloakUserId;
             } else {
@@ -73,20 +68,4 @@ public class KeycloakUserService {
         }
     }
 
-    private void assignDefaultRoles(String keycloakUserId, String userRole) {
-        try {
-            var realmResource = keycloak.realm(keycloakConfig.getTargetRealm());
-            var userResource = realmResource.users().get(keycloakUserId);
-
-            // Get realm roles
-            RoleRepresentation roleRepresentation = realmResource.roles().get(userRole)
-                .toRepresentation();
-
-            // Assign role to user
-            userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
-            log.info("Assigned role '{}' to user: {}", userRole, keycloakUserId);
-        } catch (Exception e) {
-            log.error("Error assigning role to user: {}", e.getMessage());
-        }
-    }
 }

@@ -62,7 +62,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             clientIdInput.value = localStorage.getItem('clientId') || 'web-client';
             clientSecretInput.value = localStorage.getItem('clientSecret') || 'dpine2z9X29JN0M92iJM4rzbdR6upYHs';
-            redirectUriInput.value = localStorage.getItem('redirectUri') || 'http://localhost:8080/index.html';
+            redirectUriInput.value = localStorage.getItem('redirectUri') || 'http://localhost:3000/index.html';
         });
 
         clientIdInput.addEventListener('input', () => localStorage.setItem('clientId', clientIdInput.value));
@@ -133,7 +133,7 @@
 
                 const clientId = localStorage.getItem('clientId') || 'web-client';
                 const clientSecret = localStorage.getItem('clientSecret') || 'dpine2z9X29JN0M92iJM4rzbdR6upYHs';
-                const redirectUri = localStorage.getItem('redirectUri') || 'http://localhost:8080/index.html';
+                const redirectUri = localStorage.getItem('redirectUri') || 'http://localhost:3000/index.html';
 
                 const tokenUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`;
                 const params = new URLSearchParams();
