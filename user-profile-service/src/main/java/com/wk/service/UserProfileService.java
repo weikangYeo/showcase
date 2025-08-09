@@ -4,6 +4,7 @@ import com.wk.domain.UserProfile;
 import com.wk.repo.UserProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
     private final KeycloakUserService keycloakUserService;
+    private final RoleService roleService;
 
     public UserProfile findUserProfileById(String id) {
         return userProfileRepository.findById(Long.valueOf(id))
@@ -21,9 +23,12 @@ public class UserProfileService {
 
     @Transactional
     public UserProfile createUserProfile(UserProfile userProfile) {
-        // todo change to something meaningful
-        userProfile.setRole("TEST");
+        userProfile.setFirstName(userProfile.getUsername());
+        userProfile.setLastName(userProfile.getUsername());
+        var defaultRole = roleService.findRoleById(1L);
+        userProfile.setRoles(Set.of(defaultRole));
         var result = userProfileRepository.save(userProfile);
+
         keycloakUserService.createKeycloakUser(result, "test");
         return result;
     }

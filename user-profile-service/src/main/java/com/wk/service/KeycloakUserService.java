@@ -1,7 +1,10 @@
 package com.wk.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wk.domain.UserProfile;
 import com.wk.exception.KeycloakUserCreationException;
+import com.wk.mapper.UserProfileMapper;
 import com.wk.property.KeycloakConfig;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +23,15 @@ public class KeycloakUserService {
 
     private final Keycloak keycloak;
     private final KeycloakConfig keycloakConfig;
+    private final UserProfileMapper mapper;
+    private final ObjectMapper objectMapper;
 
-    public String createKeycloakUser(UserProfile user, String password) {
+    public void createKeycloakUser(UserProfile user, String password) {
 
         UserRepresentation kcUser = new UserRepresentation();
-        kcUser.setUsername(user.getName());
+        kcUser.setUsername(user.getUsername());
+        kcUser.setFirstName(user.getFirstName());
+        kcUser.setLastName(user.getLastName());
         kcUser.setEmail(user.getEmail());
         kcUser.setEnabled(true);
         kcUser.setEmailVerified(false);
@@ -37,10 +44,15 @@ public class KeycloakUserService {
         kcUser.setCredentials(List.of(credential));
 
         // Add custom attributes
-        // todo probably role and permission populate here
         Map<String, List<String>> attributes = new HashMap<>();
-        attributes.put("department", List.of("testDepartment1", "testDepartment2"));
-        attributes.put("permissions", List.of("dummy_permission_1", "dummy_permission_2"));
+        // todo remove
+        attributes.put("permissions", List.of("dumm_permission_1", "dummy_permission_2"));
+        try {
+            var userClaimDto = mapper.toKeyCloakUserClaimDto(user);
+            attributes.put("appUserInfo", List.of(objectMapper.writeValueAsString(userClaimDto)));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+        }
         kcUser.setAttributes(attributes);
 
         // Create user in Keycloak
@@ -52,8 +64,7 @@ public class KeycloakUserService {
                 String keycloakUserId = locationHeader.substring(
                     locationHeader.lastIndexOf('/') + 1);
 
-                log.info("Successfully created Keycloak user: {}", user.getName());
-                return keycloakUserId;
+                log.info("Successfully created Keycloak user: {}", user.getUsername());
             } else {
                 String errorMessage = response.readEntity(String.class);
                 log.error("Failed to create Keycloak user: {} - {}", response.getStatus(),

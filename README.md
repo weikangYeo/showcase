@@ -259,6 +259,18 @@ Using Mysql 8.4.X because Flyway is not supporting MySQL 9.X at time of writing.
           Multivalued: ON
           Aggregate attribute values: ON
           ```
+        - Create a new mapper with these exact settings:
+              - ```
+              Name: app-user-info
+              Mapper Type: User Attribute
+              User Attribute name: appUserInfo // Must match exactly what we set in keycloak admin client
+              Token Claim Name: app-user-info // name that show in claim json
+              Claim JSON Type: JSON
+              Add to ID token: ON
+              Add to access token: ON
+              Add to userinfo: ON
+              Multivalued: OFF
+              Aggregate attribute values: OFF
 - go to realm, admin-cli client
     - enable service account authentication (so can use client secret in keycloak admin client)
     - copy client secret and paste in application.yaml (user profile service)
