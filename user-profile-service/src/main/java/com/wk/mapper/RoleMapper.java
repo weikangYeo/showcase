@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface RoleMapper {
-
     @Mapping(source = "permissions", target = "permissions", qualifiedByName = "permissionsToKeys")
     RoleDto toDto(Role role);
 
@@ -27,3 +26,4 @@ public interface RoleMapper {
                 .collect(Collectors.toSet());
     }
 }
+

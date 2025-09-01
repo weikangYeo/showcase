@@ -1,5 +1,4 @@
 package com.wk.model;
-
 import lombok.Data;
 import java.util.Set;
 
@@ -9,3 +8,4 @@ public class RoleDto {
     private String roleName;
     private Set<String> permissions;
 }
+

@@ -27,7 +27,6 @@ logging:
     javax.management: INFO
 
 management:
-  # todo change to 9090 and enable ingress/update port mapping in deployment yaml
   server.port: 9090
   endpoint:
     health.probes.enabled: true

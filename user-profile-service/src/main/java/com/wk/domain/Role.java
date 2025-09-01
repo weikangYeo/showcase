@@ -3,7 +3,6 @@ package com.wk.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Set;
-
 @Entity
 @Data
 public class Role {
@@ -20,3 +19,4 @@ public class Role {
     )
     private Set<Permission> permissions;
 }
+

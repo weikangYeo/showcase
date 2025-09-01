@@ -6,9 +6,11 @@ import com.wk.repo.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
 @Service
 @RequiredArgsConstructor
 public class PermissionService {
+
     private final PermissionRepository permissionRepository;
 
     public PermissionDto createPermission(PermissionDto permissionDto) {

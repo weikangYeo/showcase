@@ -52,39 +52,39 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 
 - [ ] DevOps
 - [x] Consider re-setup in WSL (window) ?
-- [ ] try k3d
+- [x] try k3d
 - [x] write dockerFile for app
 - [x] write deployment.yaml
 - [x] deploy app to k3d
 - [ ] config map refactoring
 - [ ] CICD
-  - [ ] dockerfile → github action → docker hub → helm install?/local deployment
+    - [ ] dockerfile → github action → docker hub → helm install?/local deployment
 - [ ] Vault/ConfigMap/Consul Server
 - [X] Ingress, Ingress controller
 - [X] how kso did it? → traefik
 - [ ] OIDC and jwt token generation
 - [X] spring oauth 2 client
 - [ ] Keycloak
-  - [x] install
-  - [x] config app for it (web-client and protect BE)
-  - [ ] integrate with user profile service, to mgmt user via user-profile service
-    - [x] create user
-    - [X] populate user permission (or any custom attr) to user claims
-    - [X] populate user id to claims
-    - [ ] Clean up default permission 
-    - [ ] Proper permission role table in user-profile-service
-    - [ ] study scope
-  - [ ] then only protect user profile service (hiding users/* endpoints or admin endpoint or the
-  whole repo from ingress)
-  - [X] Arch that login via keycloak
-  - [X] https://claude.ai/share/36f3e97a-e02e-498a-8059-2c5289f0248a
-  - [X] Arch that login via a proxy of keycloak (internal login page)
+    - [x] install
+    - [x] config app for it (web-client and protect BE)
+    - [ ] integrate with user profile service, to mgmt user via user-profile service
+        - [x] create user
+        - [X] populate user permission (or any custom attr) to user claims
+        - [X] populate user id to claims
+        - [ ] Clean up default permission
+        - [ ] Proper permission role table in user-profile-service
+        - [ ] study scope
+    - [ ] then only protect user profile service (hiding users/* endpoints or admin endpoint or the
+      whole repo from ingress)
+    - [X] Arch that login via keycloak
+    - [X] https://claude.ai/share/36f3e97a-e02e-498a-8059-2c5289f0248a
+    - [X] Arch that login via a proxy of keycloak (internal login page)
 - [ ] setup gateway/ spring gateway?
 - [ ] Proxy, reverse proxy, rate limiting
 - [ ] Migrate to Helm (WIP)
-  - [X] user profile service 
-  - [ ] casa service 
-  - [ ] archetype 
+    - [X] user profile service
+    - [ ] casa service
+    - [ ] archetype
 - [ ] Istio ?
 - [ ] Start up Script
     - [ ] include NodeJS & Express installation in setup script
@@ -118,6 +118,19 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 - start app at port 8080
 - test api via 8080
 
+### Step to run archetype
+
+- navigate to /archetype
+- run ```mvn install```
+- then run ```
+           mvn archetype:generate \
+             -DarchetypeGroupId=com.wk \
+             -DarchetypeArtifactId=sample-ms-archetype \
+             -DarchetypeVersion=0.0.2-SNAPSHOT \
+             -DgroupId=com.wk \
+              -DartifactId=casa-service
+           ```
+
 ## Local cluster testing (TODO Update)
 
 - Start cluster (run `./devops/start-cluster.bash`)
@@ -130,7 +143,7 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
     - ```
         curl --location 'user-profile.local/users/1' \
         --header 'Authorization: Bearer <token>'
-    ``` 
+      ``` 
 
 ## Build image
 
@@ -169,18 +182,18 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
     - since dont have FE code yet, so just copy `code` from response
 - Fire /token api to access token
     - ```curl
-  curl --location 'http://keycloak.local:8081/realms/showcase/protocol/openid-connect/token' \
-  --header 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'grant_type=authorization_code' \
-  --data-urlencode 'client_id=web-client' \
-  --data-urlencode 'client_secret=dpine2z9X29JN0M92iJM4rzbdR6upYHs' \
-  --data-urlencode '
-  code=9dcadfb3-3395-4e24-81f1-8ddbe0aada0c.dd1e2cdf-32b5-4491-8d9d-953eb3ead53f.8b5e7b12-2262-45c1-ad1b-5be07192874f' \
-  --data-urlencode 'redirect_uri=http://localhost:3000/callback'
-    ```
+       curl --location 'http://keycloak.local:8081/realms/showcase/protocol/openid-connect/token' \
+       --header 'Content-Type: application/x-www-form-urlencoded' \
+       --data-urlencode 'grant_type=authorization_code' \
+       --data-urlencode 'client_id=web-client' \
+       --data-urlencode 'client_secret=dpine2z9X29JN0M92iJM4rzbdR6upYHs' \
+       --data-urlencode '
+       code=9dcadfb3-3395-4e24-81f1-8ddbe0aada0c.dd1e2cdf-32b5-4491-8d9d-953eb3ead53f.8b5e7b12-2262-45c1-ad1b-5be07192874f' \
+       --data-urlencode 'redirect_uri=http://localhost:3000/callback'
+       ```
 - get access token from response
 
---
+----
 
 # Infrastructure Remark
 
@@ -191,6 +204,7 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 
 `k3d cluster create showcase-cluster --registry-create showcase-cluster-registry:0.0.0.0:5000 -p "8081:80@loadbalancer"`
 create a local cluster in k3d
+
 - it creates registry in port 5000
 - it creates a port mapping from 8081 (host port) to port 80 (traefik, ingress controller port)
 
@@ -248,29 +262,31 @@ Using Mysql 8.4.X because Flyway is not supporting MySQL 9.X at time of writing.
         - Go to Mappers tab
         - Create a new mapper with these exact settings:
             - ```
-          Name: permissions-mapper
-          Mapper Type: User Attribute
-          User Attribute name: permissions // Must match exactly what you set in KeycloakUserService
-          Token Claim Name: permissions
-          Claim JSON Type: String array
-          Add to ID token: ON
-          Add to access token: ON
-          Add to userinfo: ON
-          Multivalued: ON
-          Aggregate attribute values: ON
-          ```
+                Name: permissions-mapper
+                Mapper Type: User Attribute
+                User Attribute name: permissions // Must match exactly what you set in KeycloakUserService
+                Token Claim Name: permissions
+                Claim JSON Type: String array
+                Add to ID token: ON
+                Add to access token: ON
+                Add to userinfo: ON
+                Multivalued: ON
+                Aggregate attribute values: ON
+               ```
         - Create a new mapper with these exact settings:
-              - ```
-              Name: app-user-info
-              Mapper Type: User Attribute
-              User Attribute name: appUserInfo // Must match exactly what we set in keycloak admin client
-              Token Claim Name: app-user-info // name that show in claim json
-              Claim JSON Type: JSON
-              Add to ID token: ON
-              Add to access token: ON
-              Add to userinfo: ON
-              Multivalued: OFF
-              Aggregate attribute values: OFF
+            - ```
+                Name: app-user-info
+                Mapper Type: User Attribute
+                User Attribute name: appUserInfo // Must match exactly what we set in keycloak admin
+                client
+                Token Claim Name: app-user-info // name that show in claim json
+                Claim JSON Type: JSON
+                Add to ID token: ON
+                Add to access token: ON
+                Add to userinfo: ON
+                Multivalued: OFF
+                Aggregate attribute values: OFF
+              ```
 - go to realm, admin-cli client
     - enable service account authentication (so can use client secret in keycloak admin client)
     - copy client secret and paste in application.yaml (user profile service)
