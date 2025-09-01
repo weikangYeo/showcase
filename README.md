@@ -45,8 +45,7 @@ material and knowledge base.
 
 ## TODO
 
-> NEXT: Migrate to helm, config health endpoint by pass (no auth). and it should visible to k8s
-> cluster only
+> NEXT: Get UserInfo from JWT token, populate it to a session bean
 
 Same copy might available in Notion, keep a copy here for future (long) references.
 
@@ -56,17 +55,17 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
 - [x] write dockerFile for app
 - [x] write deployment.yaml
 - [x] deploy app to k3d
-- [ ] config map refactoring
+- [ ] com.wk.starter.config map refactoring
 - [ ] CICD
     - [ ] dockerfile → github action → docker hub → helm install?/local deployment
 - [ ] Vault/ConfigMap/Consul Server
 - [X] Ingress, Ingress controller
 - [X] how kso did it? → traefik
-- [ ] OIDC and jwt token generation
+- [x] OIDC and jwt token generation (using keycloak)
 - [X] spring oauth 2 client
 - [ ] Keycloak
     - [x] install
-    - [x] config app for it (web-client and protect BE)
+    - [x] com.wk.starter.config app for it (web-client and protect BE)
     - [ ] integrate with user profile service, to mgmt user via user-profile service
         - [x] create user
         - [X] populate user permission (or any custom attr) to user claims
@@ -79,6 +78,7 @@ Same copy might available in Notion, keep a copy here for future (long) referenc
     - [X] Arch that login via keycloak
     - [X] https://claude.ai/share/36f3e97a-e02e-498a-8059-2c5289f0248a
     - [X] Arch that login via a proxy of keycloak (internal login page)
+    - [x] Get user Info from JWT token (via Starter code, showcase-common-starter)
 - [ ] setup gateway/ spring gateway?
 - [ ] Proxy, reverse proxy, rate limiting
 - [ ] Migrate to Helm (WIP)
@@ -211,6 +211,8 @@ create a local cluster in k3d
 ## Docker
 
 ### Build image
+
+> Remember to mvn install `showcase-common-starter` before build repo image
 
 - referred https://www.baeldung.com/spring-boot-docker-images, which create layer in jar file. In
   docker file extract it

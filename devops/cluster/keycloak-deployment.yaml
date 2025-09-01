@@ -96,7 +96,7 @@ spec:
             - name: JAVA_OPTS_APPEND
               value: '-Djgroups.dns.query="keycloak-discovery" -Djgroups.bind.address=$(POD_IP)'
             # MySQL Configuration
-            # todo change to config map
+            # todo change to com.wk.starter.config map
             - name: 'KC_DB'
               value: 'mysql'
             - name: 'KC_DB_URL_HOST'

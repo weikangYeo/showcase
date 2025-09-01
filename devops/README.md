@@ -11,7 +11,7 @@
 
 - kubectl cluster-info
 - kubectl get nodes
-- kubectl config current-context
+- kubectl com.wk.starter.config current-context
 - k3d cluster start showcase-cluster
 
 --- 
